@@ -231,46 +231,46 @@ We used the DATA2.DAT dataset (28 failures, cumulative CPU time in seconds) and 
 
 ## Determining MTTF_min
 
-To find the minimum MTTF (MTTF_min) for which the SUT becomes acceptable, we experimented with various MTTF values by adjusting the "Per Number of input events" field (E3) in the Failure Data sheet of the RDC-11 tool. The FIO (Failure Intensity Objective) was set to 1 failure per the specified number of input events, making the MTTF equal to the value in E3.
+To find the minimum MTTF (MTTF_min) for which the SUT becomes acceptable, we experimented with various MTTF values by adjusting the "Per Number of input events" field (E3) in the Failure Data sheet of the RDC-11 tool. The FIO (Failure Intensity Objective) was set to 1 failure per the specified number of input events, making the MTTF equal to the value in E3. All 28 failures from DATA2.DAT were entered into the tool.
 
 We tested the following MTTF values and observed the corresponding behavior on the RDC:
 
 | MTTF (seconds) | RDC Result |
 |----------------|------------|
-| 5000 | Reject - all points deep in red zone |
-| 3000 | Reject/Continue - points at red/yellow border |
-| 2500 | Continue - points in yellow zone |
-| 2000 | Continue - points in yellow zone |
-| 1250 | Borderline Accept - points just entering green zone |
-| 1000 | Accept - points curving into green zone |
-| 625 | Accept - points clearly in green zone |
-| 500 | Accept - points deeply in green zone |
+| 3000 | Reject - points deep in red zone |
+| 2000 | Reject/Continue - points at red/yellow border |
+| 1600 | Continue - points in yellow zone |
+| 1200 | Continue - points in yellow zone |
+| 1000 | Continue - points approaching yellow/green border |
+| 800 | Borderline Accept - points just entering green zone |
+| 600 | Accept - points clearly in green zone |
+| 400 | Accept - points deeply in green zone |
 
-Based on this analysis, we determined **MTTF_min = 1250 seconds**. At this value, the observed failure data just barely crosses into the Accept region of the RDC, meaning the SUT meets the minimum reliability requirement at this MTTF target.
+Based on this analysis, we determined **MTTF_min = 800 seconds**. At this value, the observed failure data just barely crosses into the Accept region of the RDC, meaning the SUT meets the minimum reliability requirement at this MTTF target.
 
 ## RDC Plots
 
-### Plot 1: MTTF_min = 1250 seconds
+### Plot 1: MTTF_min = 800 seconds
 
-![RDC at MTTF_min = 1250](Screenshots/9_RDC_MTTFmin_1250.png)
+![RDC at MTTF_min = 800](Screenshots/9_RDC_MTTFmin_1250.png)
 
-At MTTF_min = 1250 seconds, the failure data points start in the reject/continue region for the first few failures but the trend curves rightward and just enters the accept (green) zone around failure 6-7. This indicates that the SUT barely meets the reliability target at this MTTF. The increasing time between later failures causes the data to bend toward the accept region.
+At MTTF_min = 800 seconds, the failure data points begin in the reject/continue region for the first few failures, then the trend curves rightward and just enters the accept (green) zone around failure 7. This indicates that the SUT barely meets the reliability target at this MTTF. The increasing time between later failures causes the data to bend toward the accept region, confirming reliability growth in the dataset.
 
-### Plot 2: 2x MTTF_min = 2500 seconds
+### Plot 2: 2x MTTF_min = 1600 seconds
 
-![RDC at 2x MTTF_min = 2500](Screenshots/10_RDC_Double_MTTFmin_2500.png)
+![RDC at 2x MTTF_min = 1600](Screenshots/10_RDC_Double_MTTFmin_2500.png)
 
-At double the MTTF_min (2500 seconds), the data points remain in the yellow (Continue Test) zone. This means the SUT does not meet the more stringent reliability requirement. More testing would be needed to determine whether the system can achieve this higher MTTF target. The normalized failure times are compressed (smaller x-values), keeping the data points closer to the y-axis and within the continue/reject regions.
+At double the MTTF_min (1600 seconds), the data points remain entirely within the yellow (Continue Test) zone. This means the SUT does not meet the more stringent reliability requirement at this target. The normalized failure times are compressed (smaller x-values due to the larger MTTF denominator), keeping the data points closer to the y-axis and within the continue/reject regions. More testing would be needed to reach a verdict at this MTTF.
 
-### Plot 3: 0.5x MTTF_min = 625 seconds
+### Plot 3: 0.5x MTTF_min = 400 seconds
 
-![RDC at 0.5x MTTF_min = 625](Screenshots/11_RDC_Half_MTTFmin_625.png)
+![RDC at 0.5x MTTF_min = 400](Screenshots/11_RDC_Half_MTTFmin_625.png)
 
-At half the MTTF_min (625 seconds), the data points move clearly into the green (Accept) zone by around failure 5. The failure data trend curves strongly to the right, indicating that the system comfortably exceeds this lower reliability target. The larger normalized x-values spread the data points across the chart, pushing them well into the accept region.
+At half the MTTF_min (400 seconds), the data points move clearly into the green (Accept) zone by around failure 6-7. The failure data trend curves strongly to the right due to the larger normalized x-values, spreading the data points across the chart and pushing them well into the accept region. This confirms that the system comfortably exceeds this lower reliability target.
 
 ## Summary of RDC Results
 
-The three plots demonstrate the expected behavior of the RDC: as the MTTF target increases (stricter reliability requirement), it becomes harder for the system to be accepted. Conversely, a lower MTTF target makes acceptance easier. The MTTF_min of 1250 seconds represents the threshold where the system transitions from "continue testing" to "acceptable."
+The three plots demonstrate the expected behavior of the RDC: as the MTTF target increases (stricter reliability requirement), it becomes harder for the system to be accepted. Conversely, a lower MTTF target makes acceptance easier. The MTTF_min of 800 seconds represents the threshold where the system transitions from "continue testing" to "acceptable."
 
 # Advantages and Disadvantages of Reliability Demonstration Chart
 
@@ -294,7 +294,7 @@ Both techniques were applied to failure data from hypothetical systems and provi
 
 **Part 1 (Reliability Growth Testing with C-SFRAT)** showed that the system represented by J3.DAT exhibits clear reliability growth. The failure intensity starts high (peaking around 15 failures per week) and decreases to near-zero by week 41. Both top models (TL and IFRGSB) predict the system will plateau at approximately 360 total failures, with the failure rate dropping below 2 failures per week by interval 30-33.
 
-**Part 2 (RDC with DATA2.DAT)** showed that the system represented by DATA2 meets a minimum MTTF target of 1250 seconds. Below this threshold, the system is accepted; above it, more testing is needed. The RDC analysis confirmed that the time between failures increases over the course of testing (the data curves rightward), which is consistent with reliability growth.
+**Part 2 (RDC with DATA2.DAT)** showed that the system represented by DATA2 meets a minimum MTTF target of 800 seconds. Below this threshold, the system is accepted; above it, more testing is needed. The RDC analysis confirmed that the time between failures increases over the course of testing (the data curves rightward), which is consistent with reliability growth.
 
 Both analyses agree on the fundamental finding: the systems under test show improving reliability over time. The failure rate decreases and the time between failures increases as testing progresses. However, each technique provides a different type of insight - growth testing gives predictions and trend analysis, while RDC gives acceptance decisions.
 
